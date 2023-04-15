@@ -13,8 +13,8 @@ pio.renderers.default='browser' # use when doing dev in Spyder (to show figs)
 
 # Page config
 st.set_page_config(
-    "Portfolio Opt by WSB, Ported to Streamlit by Don Bowen",
-    "📊",
+    "Boston Airbnb Analysis by SSLS",
+    "inputs/airbnb.png",
     initial_sidebar_state="expanded",
     layout="wide",
 )
@@ -29,8 +29,8 @@ st.set_page_config(
 
 with st.sidebar:
     
-    "Neighborhood Selector Test"
-    st.selectbox("Neighborhood", ["This one",'that one','the third one'])
+    "Month Selector Test"
+    st.selectbox("Month", ["3-2023",'4-2023','5-2023'])
 
     # % chance lose, $ lose, % chance win, $win, CARA formula e, CARA formula V
     qs ={1 :[.50,0,.50,10   ],
@@ -326,3 +326,73 @@ st.plotly_chart(fig5,use_container_width=True)
 - The red star is the optimal portfolio combining the risk free asset and the tangency portfolio, based on your risk aversion parameter and choice of maximum allowable leverage
 - If your leverage is more than 1 and your risk aversion low enough, the optimal portfolio might involve borrowing money to invest in equities; if so, the red star will be to the right of the blue star
 '''
+
+########################################################
+# start of my contributions
+######################################################
+
+
+#######################################################################
+# Test: making a working display with our map
+#######################################################################
+
+# copied from 9th_grade_geography_test
+
+import geopandas as gpd
+import mapclassify
+import shapely
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import pyproj
+
+listings = pd.read_csv('inputs/listings.csv.gz', compression='gzip')
+
+# this step maps each longitude and latitude to a shapely point
+listings = gpd.GeoDataFrame(listings, geometry=listings.apply(
+        lambda srs: shapely.geometry.Point(srs['longitude'], srs['latitude']), axis='columns'
+    ))
+
+# load map of neighborhoods
+boston_NBH = gpd.read_file("inputs/Census2020_BG_Neighborhoods/Census2020_BG_Neighborhoods.shp")
+
+# gotta make same fix for CRS as above
+boston_NBH = boston_NBH.to_crs('epsg:4326')
+
+# function to create a new column based on whether or not a listing is in a neighborhood
+def assign_census_NBH(bnb):
+    bools = [geom.contains(bnb['geometry']) for geom in boston_NBH['geometry']]
+    if True in bools:
+        return boston_NBH.iloc[bools.index(True)]['BlockGr202']
+    else:
+        return np.nan
+
+
+# .apply the function to the listings
+listings['census_NBH'] = listings.apply(assign_census_NBH, axis='columns')
+
+# use .map() to apply value_counts to each value of 'BlockGr202'
+boston_NBH['BNBs'] = boston_NBH['BlockGr202'].map(listings['census_NBH'].value_counts())
+boston_NBH['BNBs'] = boston_NBH['BNBs'].fillna(0)
+boston_NBH.set_index('BlockGr202', inplace=True)
+
+# this code reprojects the areas into an "equal-area" projection
+# this is so that I can get listings per Kilometer^2
+boston_NBH['BNBDensity'] = (boston_NBH['BNBs'] / boston_NBH['geometry']\
+                            .to_crs('epsg:3395')\
+                            .map(lambda p: p.area / 10**6))\
+                            .fillna(0)
+
+#####################################################
+# Create a fake data set that includes desired variables
+# then merge it with boston_NBH
+# this will suffice for proposal
+#####################################################
+
+
+# neighborhood choropleth map
+fig = px.choropleth(boston_NBH, geojson=boston_NBH.geometry, locations=boston_NBH.index,
+                    color="BNBDensity", hover_data=['BNBs'])
+fig.update_geos(fitbounds="locations", visible=False)
+
+st.plotly_chart(fig,use_container_width=False)
