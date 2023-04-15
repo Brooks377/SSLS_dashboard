@@ -1,5 +1,8 @@
 # portfolio-frontier-streamlit-dashboard
  Fork of streamlit project for a template
+ - fix for error message about pylsp when using spyder 
+   - ```conda install -c conda-forge python-lsp-server ```
+ 
 ```# download files (you can do this via github desktop too)
 cd <path to your FIN377 folder> # make sure the cd isn't a repo or inside a repo!
 git clone https://github.com/donbowen/portfolio-frontier-streamlit-dashboard.git
