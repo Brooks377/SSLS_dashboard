@@ -4,6 +4,11 @@ import plotly.express as px
 import plotly.graph_objects as go
 import plotly.io as pio
 import streamlit as st
+import geopandas as gpd
+import mapclassify
+import shapely
+import matplotlib.pyplot as plt
+import pyproj
 
 from update_data_cache import get_data
 
@@ -20,7 +25,7 @@ st.set_page_config(
 )
 
 """
-# Boston Airbnb Pricing Analysis/Prediction
+# Boston Airbnb Pricing Analysis/Prediction 
 """
 
 #############################################
@@ -54,14 +59,6 @@ with st.sidebar:
 #######################################################################
 
 # copied from 9th_grade_geography_test
-
-import geopandas as gpd
-import mapclassify
-import shapely
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import pyproj
 
 listings = pd.read_csv('inputs/listings.csv.gz', compression='gzip')
 
