@@ -2,7 +2,7 @@
  Fork of streamlit project for a template
  - fix for error message about pylsp when using spyder 
    - ```conda install -c conda-forge python-lsp-server ```
- 
+## To Run for the first time
 ```
 # download files (you can do this via github desktop too)
 cd <path to your FIN377 folder> # make sure the cd isn't a repo or inside a repo!
@@ -27,7 +27,7 @@ streamlit run app.py
 # open any IDE you want to modify app - spyder > jupyterlab for this
 spyder  # and when you save the file, the app website will update
 ```
-## To run after first time
+## To Run after first time
 ```
 ####
 # my current path: C:\Users\dbawa\ZZ__School_Related\FIN_377\SSLS_dashboard
