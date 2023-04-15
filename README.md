@@ -25,4 +25,7 @@ conda activate streamlit-env
 streamlit run app.py
 
 # open any IDE you want to modify app - spyder > jupyterlab for this
-spyder  # and when you save the file, the app website will update```
+spyder  # and when you save the file, the app website will update
+```
+
+[Template Source Repo](https://github.com/donbowen/portfolio-frontier-streamlit-dashboard/)
