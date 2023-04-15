@@ -27,5 +27,15 @@ streamlit run app.py
 # open any IDE you want to modify app - spyder > jupyterlab for this
 spyder  # and when you save the file, the app website will update
 ```
+## To run after first time
+```
+####
+# my current path: C:\Users\dbawa\ZZ__School_Related\FIN_377\SSLS_dashboard
+####
+
+# In Anaconda Prompt
+cd <path to SSLS_dashboard folder>
+streamlit run app.py
+```
 
 [Template Source Repo](https://github.com/donbowen/portfolio-frontier-streamlit-dashboard/)
