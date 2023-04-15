@@ -3,9 +3,10 @@
  - fix for error message about pylsp when using spyder 
    - ```conda install -c conda-forge python-lsp-server ```
  
-```# download files (you can do this via github desktop too)
+```
+# download files (you can do this via github desktop too)
 cd <path to your FIN377 folder> # make sure the cd isn't a repo or inside a repo!
-git clone https://github.com/donbowen/portfolio-frontier-streamlit-dashboard.git
+git clone https://github.com/Brooks377/SSLS_dashboard.git
 
 # move the terminal to the new folder (adjust next line if necessary)
 cd portfolio-frontier-streamlit-dashboard  
