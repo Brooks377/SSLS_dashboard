@@ -2,6 +2,8 @@
  Fork of streamlit project for a template
  - fix for error message about pylsp when using spyder 
    - ```conda install -c conda-forge python-lsp-server ```
+ - PROPOSAL NOTE: current build runs quite slow because of data building inside of app.py
+     - this is an easy fix but not worth it for the proposal
 ## To Run for the first time
 ```
 # download files (you can do this via github desktop too)
