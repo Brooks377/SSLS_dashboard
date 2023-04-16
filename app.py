@@ -10,10 +10,6 @@ import shapely
 import matplotlib.pyplot as plt
 import pyproj
 
-from update_data_cache import get_data
-
-from pypfopt.efficient_frontier import EfficientFrontier
-
 pio.renderers.default='browser' # use when doing dev in Spyder (to show figs)
 
 # Page config
@@ -57,13 +53,6 @@ with st.sidebar:
 #############################################
 # end: sidebar
 #############################################
-
-######################################################
-# start of my contributions
-######################################################
-
-######################################################
-# redundant note to help me notice where my test starts
 
 #######################################################################
 # Test: making a working display with our map
@@ -117,7 +106,8 @@ if zone_type == "Neighborhoods":
                                  selectedpoints=zone_index_select)
 
 #####################################################
-# load map of census tracts (same steps as above for NBH)
+# map of census tracts (same steps as above for NBH)
+#####################################################
 
 # else implies census tract data
 else:
