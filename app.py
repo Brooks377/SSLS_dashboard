@@ -47,10 +47,10 @@ with st.sidebar:
     
     if zone_type == 'Neighborhoods':
         "Select Neighborhood"
-        zone_select = st.selectbox("Neighborhood", boston_NBH['BlockGr202'].tolist())
+        zone_select = st.selectbox("Neighborhood", ['All (Boston)'] + boston_NBH['BlockGr202'].tolist())
     else:
         "Select Census Tract"
-        zone_select = st.selectbox("Census Tract", boston_tract['NAME20'].tolist())
+        zone_select = st.selectbox("Census Tract", ['All (Boston)'] + boston_tract['NAME20'].tolist())
     '''
     [Source code and contributors here.](https://github.com/donbowen/portfolio-frontier-streamlit-dashboard)
     '''
@@ -97,6 +97,12 @@ if zone_type == "Neighborhoods":
     boston_NBH['BNBs'] = boston_NBH['BNBs'].fillna(0)
     boston_NBH.set_index('BlockGr202', inplace=True)
 
+    # selecting desired zone on the map
+    if zone_select == "All (Boston)":
+        zone_index_select = list(range(len(boston_NBH)))
+    else:
+        zone_index_select = [(boston_NBH.loc[zone_select, 'OBJECTID'] - 1)]
+    
     # this code reprojects the areas into an "equal-area" projection
     # this is so that I can get listings per Kilometer^2
     boston_NBH['BNBDensity'] = (boston_NBH['BNBs'] / boston_NBH['geometry']\
@@ -106,6 +112,9 @@ if zone_type == "Neighborhoods":
     fig = px.choropleth(boston_NBH, geojson=boston_NBH.geometry, locations=boston_NBH.index,
                         color="BNBDensity", hover_data=['BNBs'])
     fig.update_geos(fitbounds="locations", visible=False)
+    fig.update_traces(hovertemplate='<b>%{location}</b><br>' +
+                                 'BNB Density: %{z}<br>',
+                                 selectedpoints=zone_index_select)
 
 #####################################################
 # load map of census tracts (same steps as above for NBH)
@@ -125,6 +134,13 @@ else:
     boston_tract['BNBs'] = boston_tract['NAME20'].map(listings['census_tract'].value_counts())
     boston_tract['BNBs'] = boston_tract['BNBs'].fillna(0)
     boston_tract.set_index('NAME20', inplace=True)
+
+    # selecting desired zone on the map
+    if zone_select == "All (Boston)":
+        zone_index_select = list(range(len(boston_tract)))
+    else:
+        zone_index_select = [(boston_tract.loc[zone_select, 'OBJECTID'] - 1)]
+
     boston_tract['BNBDensity'] = (boston_tract['BNBs'] / boston_tract['geometry']\
                                 .to_crs('epsg:3395')\
                                 .map(lambda p: p.area / 10**6))\
@@ -132,6 +148,9 @@ else:
     fig = px.choropleth(boston_tract, geojson=boston_tract.geometry, locations=boston_tract.index,
                         color="BNBDensity", hover_data=['BNBs'])
     fig.update_geos(fitbounds="locations", visible=False)
+    fig.update_traces(hovertemplate='<b>%{location}</b><br>' +
+                                    'BNB Density: %{z}<br>',
+                                    selectedpoints=zone_index_select)
 
 # displaying plot
 st.plotly_chart(fig,use_container_width=False)
@@ -151,17 +170,35 @@ st.plotly_chart(fig,use_container_width=False)
 """
 ## This section will show stats about the selected neighborhood/tract.
     - Changes based on sidebar inputs
+    - Desired Final outputs include:
+         - Boston listing prices each month
+              - high/low/avg
+              - Total available listings / total listings (potentially per price?)
+                - Appartments/houses/other
+         - NBH/tract listing prices each month
+              - high/low/avg
+              - Total available listings / total listings (by zone) (potentially per price?)
+                - Appartments/houses/other
+         - Most common words describing high/low price listings
+              - word splatter or short list
+         - Total neightborhood/tract household vacancy stats
+         - Not necessary for report:
+              - would be super easy to add demographic/population data from census
 """
-if zone_type == 'Neighborhoods':
-    example_output = boston_NBH.loc[zone_select,'BNBs']
-    example_output2 = boston_NBH.loc[zone_select,'Shape_Leng']
-    f'Example Output (# BNBs): {example_output}'
-    f'Example Output 2 (Perimeter length): {example_output2}'
+if zone_select == 'All (Boston)':
+    'When no zone is selected, only Boston-Level stats will show'
+    'Select a zone to produce outputs in this proposal demo'
 else:
-    example_output = boston_tract.loc[zone_select,'BNBs']
-    example_output2 = boston_tract.loc[zone_select,'Shape_STLe']
-    f'Example Output (# BNBs): {example_output}'
-    f'Example Output 2 (Perimeter length): {example_output2}'
+    if zone_type == 'Neighborhoods':
+        example_output = boston_NBH.loc[zone_select,'BNBs']
+        example_output2 = boston_NBH.loc[zone_select,'Shape_Leng']
+        f'Example Output (# BNBs): {example_output}'
+        f'Example Output 2 (Perimeter length): {example_output2}'
+    else:
+        example_output = boston_tract.loc[zone_select,'BNBs']
+        example_output2 = boston_tract.loc[zone_select,'Shape_STLe']
+        f'Example Output (# BNBs): {example_output}'
+        f'Example Output 2 (Perimeter length): {example_output2}'
 
 ######################################################
 #: Report Section
@@ -169,7 +206,9 @@ else:
 
 """
 ## This section will show the report file as a markdown document
-    - Below is our initial proposal, to ensure markdown files display properly
+    - Below is our initial proposal, it's here to ensure markdown files display properly
+    - To reiterate:
+        - EVERYTHING BELOW THIS POINT IS FROM THE INITIAL PROPOSAL AND IS NO LONGER RELEVANT TO THE CURRENT BUILD
 
 # Research Proposal: Analysis of Boston Airbnb Listings
 ### Big Picture Question: What attributes about a Boston Airbnb listing are most influential to its list price?
