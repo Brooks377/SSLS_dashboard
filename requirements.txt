@@ -7,3 +7,7 @@ pandas-datareader
 spyder
 pyportfolioopt==1.5.2
 plotly
+shapely
+mapclassify
+geopandas
+pyproj
