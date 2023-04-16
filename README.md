@@ -32,6 +32,7 @@ jupyter lab  # alternative IDE
 
 # In Anaconda Prompt:
 cd <path to SSLS_dashboard folder>
+conda activate streamlit-env
 streamlit run app.py
 ```
 
