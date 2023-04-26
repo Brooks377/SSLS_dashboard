@@ -9,6 +9,7 @@ import mapclassify
 import shapely
 import matplotlib.pyplot as plt
 import pyproj
+from datetime import datetime, timedelta
 
 pio.renderers.default='browser' # use when doing dev in Spyder (to show figs)
 
@@ -25,9 +26,17 @@ st.set_page_config(
 """
 
 # load all data first, some is needed for sidebar
-boston_NBH = gpd.read_file("inputs/Census2020_BG_Neighborhoods/Census2020_BG_Neighborhoods.shp")
 listings = pd.read_csv('inputs/listings.csv.gz', compression='gzip')
-boston_tract = gpd.read_file("inputs/Census2020_Tracts/Census2020_Tracts.shp")
+boston_NBH = pd.read_csv("inputs/boston_NBH.csv")
+boston_NBH_map = gpd.read_file("inputs/Census2020_BG_Neighborhoods/Census2020_BG_Neighborhoods.shp")
+boston_tract = pd.read_csv("inputs/boston_tract.csv")
+boston_tract_map = gpd.read_file("inputs/Census2020_Tracts/Census2020_Tracts.shp")
+
+# more sidebar prep
+start_date = pd.to_datetime('2023-03-19')
+end_date = pd.to_datetime('2024-03-18')
+dates = pd.date_range(start=start_date, end=end_date, freq='MS')
+dates = [d.strftime('%B %Y') for d in dates]
 
 #############################################
 # start: sidebar
@@ -36,7 +45,7 @@ boston_tract = gpd.read_file("inputs/Census2020_Tracts/Census2020_Tracts.shp")
 with st.sidebar:
     
     "Select Month"
-    month_select = st.selectbox("Month", ["3-2023",'4-2023','5-2023'])
+    month_select = st.selectbox("Month", dates)
     
     "Select Zone Type"
     zone_type = st.selectbox("Zone Type", ['Neighborhoods','Census-Tracts'])
@@ -48,7 +57,7 @@ with st.sidebar:
         "Select Census Tract"
         zone_select = st.selectbox("Census Tract", ['All (Boston)'] + boston_tract['NAME20'].tolist())
     '''
-    [Source code and contributors here.](https://github.com/donbowen/portfolio-frontier-streamlit-dashboard)
+    [Template source code here.](https://github.com/donbowen/portfolio-frontier-streamlit-dashboard)
     '''
 #############################################
 # end: sidebar
@@ -58,48 +67,30 @@ with st.sidebar:
 # Test: making a working display with our map
 #######################################################################
 
-# copied from 9th_grade_geography_test
-
-# this step maps each longitude and latitude to a shapely point
-listings = gpd.GeoDataFrame(listings, geometry=listings.apply(
-        lambda srs: shapely.geometry.Point(srs['longitude'], srs['latitude']), axis='columns'
-    ))
+# copied/cleaned from 9th_grade_geography_test
 
 # the following if/else uses zone_type selectbox
 if zone_type == "Neighborhoods":
-    # fix for non-stardard coordinates, see notebook for details
-    boston_NBH = boston_NBH.to_crs('epsg:4326')
-
-    # function to create a new column based on whether or not a listing is in a neighborhood
-    def assign_census_NBH(bnb):
-        bools = [geom.contains(bnb['geometry']) for geom in boston_NBH['geometry']]
-        if True in bools:
-            return boston_NBH.iloc[bools.index(True)]['BlockGr202']
-        else:
-            return np.nan
-
-    # .apply the function to the listings
-    listings['census_NBH'] = listings.apply(assign_census_NBH, axis='columns')
-
-    # use .map() to apply value_counts to each value of 'BlockGr202'
-    boston_NBH['BNBs'] = boston_NBH['BlockGr202'].map(listings['census_NBH'].value_counts())
-    boston_NBH['BNBs'] = boston_NBH['BNBs'].fillna(0)
-    boston_NBH.set_index('BlockGr202', inplace=True)
 
     # selecting desired zone on the map
     if zone_select == "All (Boston)":
         zone_index_select = list(range(len(boston_NBH)))
     else:
-        zone_index_select = [(boston_NBH.loc[zone_select, 'OBJECTID'] - 1)]
-    
-    # this code reprojects the areas into an "equal-area" projection
-    # this is so that I can get listings per Kilometer^2
-    boston_NBH['BNBDensity'] = (boston_NBH['BNBs'] / boston_NBH['geometry']\
-                                .to_crs('epsg:3395')\
-                                .map(lambda p: p.area / 10**6))\
-                                .fillna(0)
-    fig = px.choropleth(boston_NBH, geojson=boston_NBH.geometry, locations=boston_NBH.index,
-                        color="BNBDensity", hover_data=['BNBs'])
+        mask = boston_NBH_map['BlockGr202'] == zone_select
+        filtered_df = boston_NBH_map[mask]
+
+        # select the value in the other column
+        zone_index_select = [filtered_df['OBJECTID'].values[0] - 1]
+
+    boston_NBH_map = boston_NBH_map.to_crs('epsg:4326')
+    boston_NBH_map.set_index('BlockGr202', inplace=True)
+    boston_NBH.set_index('BlockGr202', inplace=True)
+
+    fig = px.choropleth(boston_NBH,
+                        geojson=boston_NBH_map.geometry,
+                        locations=boston_NBH_map.index,
+                        color="BNBDensity",
+                        hover_data=['BNBs'])
     fig.update_geos(fitbounds="locations", visible=False)
     fig.update_traces(hovertemplate='<b>%{location}</b><br>' +
                                  'BNB Density: %{z}<br>',
@@ -107,11 +98,12 @@ if zone_type == "Neighborhoods":
 
 #####################################################
 # map of census tracts (same steps as above for NBH)
+# I have to make changes to match above's speed
 #####################################################
 
 # else implies census tract data
 else:
-    boston_tract = boston_tract.to_crs('epsg:4326')
+    boston_tract_map = boston_tract.to_crs('epsg:4326')
 
     def assign_census_tract(bnb):
         bools = [geom.contains(bnb['geometry']) for geom in boston_tract['geometry']]
