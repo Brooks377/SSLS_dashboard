@@ -32,6 +32,10 @@ boston_NBH_map = gpd.read_file("inputs/Census2020_BG_Neighborhoods/Census2020_BG
 boston_tract = pd.read_csv("inputs/boston_tract.csv")
 boston_tract_map = gpd.read_file("inputs/Census2020_Tracts/Census2020_Tracts.shp")
 
+# census data
+NBH_data = pd.read_csv("inputs/NBH_census_data.csv")
+tract_data = pd.read_csv("inputs/tract_census_data.csv")
+
 # more sidebar prep
 start_date = pd.to_datetime('2023-03-19')
 end_date = pd.to_datetime('2024-03-18')
@@ -76,8 +80,8 @@ if zone_type == "Neighborhoods":
     if zone_select == "All (Boston)":
         zone_index_select = list(range(len(boston_NBH)))
     else:
-        mask = boston_NBH_map['BlockGr202'] == zone_select
-        filtered_df = boston_NBH_map[mask]
+        mask = boston_NBH['BlockGr202'] == zone_select
+        filtered_df = boston_NBH[mask]
 
         # select the value in the other column
         zone_index_select = [filtered_df['OBJECTID'].values[0] - 1]
@@ -103,39 +107,33 @@ if zone_type == "Neighborhoods":
 
 # else implies census tract data
 else:
-    boston_tract_map = boston_tract.to_crs('epsg:4326')
-
-    def assign_census_tract(bnb):
-        bools = [geom.contains(bnb['geometry']) for geom in boston_tract['geometry']]
-        if True in bools:
-            return boston_tract.iloc[bools.index(True)]['NAME20']
-        else:
-            return np.nan
-
-    listings['census_tract'] = listings.apply(assign_census_tract, axis='columns')
-    boston_tract['BNBs'] = boston_tract['NAME20'].map(listings['census_tract'].value_counts())
-    boston_tract['BNBs'] = boston_tract['BNBs'].fillna(0)
-    boston_tract.set_index('NAME20', inplace=True)
 
     # selecting desired zone on the map
     if zone_select == "All (Boston)":
         zone_index_select = list(range(len(boston_tract)))
     else:
-        zone_index_select = [(boston_tract.loc[zone_select, 'OBJECTID'] - 1)]
+        mask = boston_tract['NAME20'] == zone_select
+        filtered_df = boston_tract[mask]
 
-    boston_tract['BNBDensity'] = (boston_tract['BNBs'] / boston_tract['geometry']\
-                                .to_crs('epsg:3395')\
-                                .map(lambda p: p.area / 10**6))\
-                                .fillna(0)
-    fig = px.choropleth(boston_tract, geojson=boston_tract.geometry, locations=boston_tract.index,
-                        color="BNBDensity", hover_data=['BNBs'])
+        # select the value in the other column
+        zone_index_select = [filtered_df['OBJECTID'].values[0] - 1]
+
+    boston_tract_map = boston_tract_map.to_crs('epsg:4326')
+    boston_tract_map.set_index('NAME20', inplace=True)
+    boston_tract.set_index('NAME20', inplace=True)
+
+    fig = px.choropleth(boston_tract,
+                        geojson=boston_tract_map.geometry,
+                        locations=boston_tract_map.index,
+                        color="BNBDensity",
+                        hover_data=['BNBs'])
     fig.update_geos(fitbounds="locations", visible=False)
     fig.update_traces(hovertemplate='<b>%{location}</b><br>' +
-                                    'BNB Density: %{z}<br>',
-                                    selectedpoints=zone_index_select)
+                                 'BNB Density: %{z}<br>',
+                                 selectedpoints=zone_index_select)
 
 # displaying plot
-st.plotly_chart(fig,use_container_width=False)
+st.plotly_chart(fig, use_container_width=False)
 
 #####################################################
 # Create a fake data set that includes desired variables
@@ -148,6 +146,58 @@ st.plotly_chart(fig,use_container_width=False)
 ######################################################
 # stats about map
 ######################################################
+
+# demographic data from census (pie chart)
+
+if zone_type == "Neighborhoods":
+    if zone_select == "All (Boston)":
+        plot_values = NBH_data.iloc[:, 2:7].sum().values.tolist()
+        plot_labels = NBH_data.iloc[:, 2:7].columns.tolist()
+        plot_anot = NBH_data['Total:'].sum()
+    else:
+        # slice the row
+        row_to_plot = NBH_data.loc[NBH_data['field concept'] == zone_select]
+
+        # slice the columns
+        cols_to_plot = row_to_plot.iloc[:, 2:7]
+
+        # filter out zeros
+        mask = cols_to_plot.ne(0)
+        cols_to_plot = cols_to_plot.loc[:, mask.values[0]]
+        plot_values = cols_to_plot.values.tolist()[0]
+        plot_labels = cols_to_plot.columns.tolist()
+        plot_anot = row_to_plot['Total:'].values[0]
+
+else:
+    # tract pie chart
+    if zone_select == "All (Boston)":
+        plot_values = tract_data.iloc[:, 2:10].sum().values.tolist()
+        plot_labels = tract_data.iloc[:, 2:10].columns.tolist()
+        plot_anot = tract_data['Total:'].sum()
+    else:
+        # slice the row
+        selector = boston_tract.loc[zone_select, 'TRACTCE20']
+        row_to_plot = tract_data.loc[tract_data['Census Tract'] == selector]
+
+        # slice the columns
+        cols_to_plot = row_to_plot.iloc[:, 2:10]
+
+        # filter out zeros
+        mask = cols_to_plot.ne(0)
+        cols_to_plot = cols_to_plot.loc[:, mask.values[0]]
+        plot_values = cols_to_plot.values.tolist()[0]
+        plot_labels = cols_to_plot.columns.tolist()
+        plot_anot = row_to_plot['Total:'].values[0]
+
+
+# create a pie chart
+fig1, ax = plt.subplots()
+ax.pie(plot_values, autopct='%1.1f%%')
+ax.set_title('Zone Demographic Breakdown')
+ax.legend(labels=plot_labels, loc='center left', bbox_to_anchor=(.95, .5 ))
+ax.annotate(f'Total Population of Selected Zone: {plot_anot}' , xy=(1, 1), xytext=(ax.get_xlim()[1] * .96 , ax.get_ylim()[1] * .6), bbox=dict(facecolor='white', boxstyle='round'))
+
+st.pyplot(fig1)
 
 """
 ## This section will show stats about the selected neighborhood/tract.
