@@ -33,7 +33,7 @@ jupyter lab  # alternative IDE
 # In Anaconda Prompt:
 cd <path to SSLS_dashboard folder>
 conda activate streamlit-env
-streamlit run app.py
+streamlit run Overview.py
 ```
 
 [Template Source Repo](https://github.com/donbowen/portfolio-frontier-streamlit-dashboard/)
