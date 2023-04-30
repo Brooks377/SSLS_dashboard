@@ -30,15 +30,15 @@ boston_NBH_map = load_gpd("inputs/Census2020_BG_Neighborhoods/Census2020_BG_Neig
 boston_tract = load_csv("inputs/boston_tract.csv")
 boston_tract_map = load_gpd("inputs/Census2020_Tracts/Census2020_Tracts.shp")
 
-# census data
-NBH_data = load_csv("inputs/NBH_census_data.csv")
-tract_data = load_csv("inputs/tract_census_data.csv")
-
 # more sidebar prep
 start_date = pd.to_datetime('2023-03-19')
 end_date = pd.to_datetime('2024-03-18')
 dates = pd.date_range(start=start_date, end=end_date, freq='MS')
 dates = [d.strftime('%B %Y') for d in dates]
+
+# census data
+NBH_data = load_csv("inputs/NBH_census_data.csv")
+tract_data = load_csv("inputs/tract_census_data.csv")
 
 #############################################
 # start: sidebar
@@ -206,75 +206,77 @@ st.markdown('<hr style="border-top: 2px solid #bbb;">', unsafe_allow_html=True)
 ######################
 # vacancy pie chart
 ######################
-
-if zone_type == "Neighborhoods":
-    if zone_select == "All (Boston)":
-        plot_values = NBH_data.iloc[:, 7:].sum().values.tolist()
-        plot_labels = NBH_data.iloc[:, 7:].columns.tolist()
-        plot_anot = NBH_data[plot_labels].sum().sum()
-
-        # title variable
-        type_lab = "Boston"
-
-    else:
-        # slice the row
-        row_to_plot = NBH_data.loc[NBH_data['field concept'] == zone_select]
-
-        # slice the columns
-        cols_to_plot = row_to_plot.iloc[:, 7:]
-
-        # filter out zeros
-        mask = cols_to_plot.ne(0)
-        cols_to_plot = cols_to_plot.loc[:, mask.values[0]]
-        plot_values = cols_to_plot.values.tolist()[0]
-        plot_labels = cols_to_plot.columns.tolist()
-        plot_anot = cols_to_plot.iloc[:,0].values[0] + cols_to_plot.iloc[:,1].values[0]
-        
-        # title variable
-        type_lab = "Neighborhood"
-
+if not zone_select == "All (Boston)":
+    households_in_zone = row_to_plot['Occupied'].values[0] + row_to_plot['Vacant'].values[0]
 else:
-    # tract pie chart
-    if zone_select == "All (Boston)":
-        plot_values = tract_data.iloc[:,10:].sum().values.tolist()
-        plot_labels = tract_data.iloc[:,10:].columns.tolist()
-        plot_anot = tract_data[plot_labels].sum().sum()
+    households_in_zone = NBH_data['Occupied'].sum() + NBH_data['Vacant'].sum()
 
-        # title variable
-        type_lab = "Boston"
+if households_in_zone > 0:
+    if zone_type == "Neighborhoods":
+        if zone_select == "All (Boston)":
+            plot_values = NBH_data.iloc[:, 7:].sum().values.tolist()
+            plot_labels = NBH_data.iloc[:, 7:].columns.tolist()
+            plot_anot = households_in_zone
+
+            # title variable
+            type_lab = "Boston"
+
+        else:
+            # slice the row
+            row_to_plot = NBH_data.loc[NBH_data['field concept'] == zone_select]
+
+            # slice the columns
+            cols_to_plot = row_to_plot.iloc[:, 7:]
+
+            # filter out zeros
+            mask = cols_to_plot.ne(0)
+            cols_to_plot = cols_to_plot.loc[:, mask.values[0]]
+            plot_values = cols_to_plot.values.tolist()[0]
+            plot_labels = cols_to_plot.columns.tolist()
+            plot_anot = households_in_zone
+
+            # title variable
+            type_lab = "Neighborhood"
 
     else:
-        # slice the row
-        selector = boston_tract.loc[zone_select, 'TRACTCE20']
-        row_to_plot = tract_data.loc[tract_data['Census Tract'] == selector]
+        # tract pie chart
+        if zone_select == "All (Boston)":
+            plot_values = tract_data.iloc[:,10:].sum().values.tolist()
+            plot_labels = tract_data.iloc[:,10:].columns.tolist()
+            plot_anot = households_in_zone
 
-        # slice the columns
-        cols_to_plot = row_to_plot.iloc[:,10:]
+            # title variable
+            type_lab = "Boston"
 
-        # filter out zeros
-        mask = cols_to_plot.ne(0)
-        cols_to_plot = cols_to_plot.loc[:, mask.values[0]]
-        plot_values = cols_to_plot.values.tolist()[0]
-        plot_labels = cols_to_plot.columns.tolist()
-        plot_anot = cols_to_plot.iloc[:,0].values[0] + cols_to_plot.iloc[:,1].values[0]
-        
-        # title variable
-        type_lab = "Tract"
+        else:
+            # slice the row
+            selector = boston_tract.loc[zone_select, 'TRACTCE20']
+            row_to_plot = tract_data.loc[tract_data['Census Tract'] == selector]
 
+            # slice the columns
+            cols_to_plot = row_to_plot.iloc[:,10:]
 
-# create a pie chart
-fig2, ax = plt.subplots()
-ax.pie(plot_values, autopct='%1.1f%%')
-ax.set_title(f'{type_lab}-Level Household Vacancy Rate')
-ax.legend(labels=plot_labels, loc='center left', bbox_to_anchor=(.95, .5 ))
-ax.annotate(f'Total Households in {type_lab}: {plot_anot}' , xy=(1, 1), xytext=(ax.get_xlim()[1] * .96 , ax.get_ylim()[1] * .4), bbox=dict(facecolor='white', boxstyle='round'))
+            # filter out zeros
+            mask = cols_to_plot.ne(0)
+            cols_to_plot = cols_to_plot.loc[:, mask.values[0]]
+            plot_values = cols_to_plot.values.tolist()[0]
+            plot_labels = cols_to_plot.columns.tolist()
+            plot_anot = households_in_zone
 
-st.pyplot(fig2)
-
-
+            # title variable
+            type_lab = "Tract"
 
 
+    # create a pie chart
+    fig2, ax = plt.subplots()
+    ax.pie(plot_values, autopct='%1.1f%%')
+    ax.set_title(f'{type_lab}-Level Household Vacancy Rate')
+    ax.legend(labels=plot_labels, loc='center left', bbox_to_anchor=(.95, .5 ))
+    ax.annotate(f'Total Households in {type_lab}: {plot_anot}' , xy=(1, 1), xytext=(ax.get_xlim()[1] * .96 , ax.get_ylim()[1] * .4), bbox=dict(facecolor='white', boxstyle='round'))
 
+    st.pyplot(fig2)
+else:
+    st.write('There is not enough housing data for vacancy stats')
 
 
 

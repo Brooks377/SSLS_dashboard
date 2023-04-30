@@ -40,6 +40,10 @@ end_date = pd.to_datetime('2024-03-18')
 dates = pd.date_range(start=start_date, end=end_date, freq='MS')
 dates = [d.strftime('%B %Y') for d in dates]
 
+# remove places with 0 listings because it breaks the model
+boston_NBH_box = boston_NBH[boston_NBH['BNBs'] != 0]
+boston_tract_box = boston_tract[boston_tract['BNBs'] != 0]
+
 # survey items (model variables)
 items = ['air_conditioning', 'high_end_electronics', 'bbq', 'balcony', 'nature_and_views', 'bed_linen', 'breakfast', 'tv', 'coffee_machine', 'cooking_basics', 'white_goods', 'elevator', 'gym', 'child_friendly', 'parking', 'outdoor_space', 'host_greeting', 'hot_tub_sauna_or_pool', 'internet', 'long_term_stays', 'pets_allowed', 'private_entrance', 'secure', 'self_check_in', 'smoking_allowed']
 
@@ -47,17 +51,21 @@ room_type_list = ['Entire home/apt', 'Private room', 'Hotel room', 'Shared room'
 
 prop_type_list = ['Entire rental unit', 'Private room in rental unit', 'Entire condo', 'Private room in home', 'Entire serviced apartment', 'Entire home', 'Private room in condo', 'Private room in townhouse', 'Entire townhouse', 'Entire guest suite', 'Private room in bed and breakfast', 'Room in boutique hotel', 'Room in hotel', 'Other']
 
-# 'room_type', 'property_type', 'bedrooms', 'accommodates', 'census_NBH'
+################################
+# sidebar
+################################
 
 with st.sidebar:
     zone_type = st.selectbox("Zone Type", ['Neighborhoods','Census-Tracts'])
     if zone_type == 'Neighborhoods':
         
-        zone_select = st.selectbox("Neighborhood", ['All (Boston)'] + boston_NBH['BlockGr202'].tolist())
+        zone_select = st.selectbox("Neighborhood", ['All (Boston)'] + boston_NBH_box['BlockGr202'].tolist())
     else:
         
-        zone_select = st.selectbox("Census Tract", ['All (Boston)'] + boston_tract['NAME20'].tolist())
-
+        zone_select = st.selectbox("Census Tract", ['All (Boston)'] + boston_tract_box['NAME20'].tolist())
+    """
+    Neighborhoods/tracts with 0 current listings cannot be selected
+    """
     st.button("Rerun")
     
     # lame horizontal line
