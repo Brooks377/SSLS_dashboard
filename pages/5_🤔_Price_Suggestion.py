@@ -166,21 +166,38 @@ st.plotly_chart(fig, use_container_width=False)
 
 # extract models from zip
 
+# initialize dictionary to hold models (prevents load every time)
+models_dict = {}
+
 # name of the NBH models zip
-zip_filename = 'inputs/models/zip_models_NBH.zip'
-# create a zipfile object
-with zipfile.ZipFile(zip_filename, 'r') as zip_file:
-    # load models from the pickle files in the zip file
-    with zip_file.open('models_NBH.pkl') as f:
-        models_NBH = pickle.load(f)
+if zone_type == "Neighborhoods":
+    if 'models_NBH' not in models_dict:
+        zip_filename = 'inputs/models/zip_models_NBH.zip'
+        # create a zipfile object
+        with zipfile.ZipFile(zip_filename, 'r') as zip_file:
+            # load models from the pickle files in the zip file
+            with zip_file.open('models_NBH.pkl') as f:
+                models_NBH = pickle.load(f)
+        # store the models in the dictionary
+        models_dict['models_NBH'] = models_NBH
+    else:
+        # load the models from the dictionary if they have already been loaded
+        models_NBH = models_dict['models_NBH']
 
 # name of the tract models zip
-zip_filename = 'inputs/models/zip_models_tract.zip'
-# create a zipfile object
-with zipfile.ZipFile(zip_filename, 'r') as zip_file:
-    # load models from the pickle files in the zip file
-    with zip_file.open('models_tract.pkl') as f:
-        models_tract = pickle.load(f)
+else:
+    if 'models_tract' not in models_dict:
+        zip_filename = 'inputs/models/zip_models_tract.zip'
+        # create a zipfile object
+        with zipfile.ZipFile(zip_filename, 'r') as zip_file:
+            # load models from the pickle files in the zip file
+            with zip_file.open('models_tract.pkl') as f:
+                models_tract = pickle.load(f)
+        # store the models in the dictionary
+        models_dict['models_tract'] = models_tract
+    else:
+        # load the models from the dictionary if they have already been loaded
+        models_tract = models_dict['models_tract']
 
 
 # select model based on month
