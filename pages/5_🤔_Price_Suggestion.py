@@ -188,47 +188,43 @@ def load_models(zone_type):
                 models_tract = pickle.load(f)
         return models_tract
 
-# use the load_models function
-if zone_type == "Neighborhoods":
-    models_NBH = load_models(zone_type)
-else:
-    models_tract = load_models(zone_type)
 
-
-# select model based on month
-if zone_type == "Neighborhoods":
-    if month_select == 'April 2023':
-        model = models_NBH['model_0']
-    elif month_select == 'May 2023' or month_select == 'June 2023':
-        model = models_NBH['model_1']
-    elif month_select == 'July 2023' or month_select == 'August 2023':
-        model = models_NBH['model_2']
-    elif month_select == 'September 2023':
-        model = models_NBH['model_4']
-    elif month_select == 'October 2023':
-        model = models_NBH['model_5']
-    elif month_select == 'November 2023' or month_select == 'December 2023':
-        model = models_NBH['model_6']
-    elif month_select == 'January 2024' or month_select == 'Febuary 2024' or month_select == 'March 2024':
-        model = models_NBH['model_9']
-else:
-    if month_select == 'April 2023':
-        model = models_tract['model_0']
-    elif month_select == 'May 2023' or month_select == 'June 2023':
-        model = models_tract['model_1']
-    elif month_select == 'July 2023' or month_select == 'August 2023':
-        model = models_tract['model_2']
-    elif month_select == 'September 2023':
-        model = models_tract['model_4']
-    elif month_select == 'October 2023':
-        model = models_tract['model_5']
-    elif month_select == 'November 2023' or month_select == 'December 2023':
-        model = models_tract['model_6']
-    elif month_select == 'January 2024' or month_select == 'Febuary 2024' or month_select == 'March 2024':
-        model = models_tract['model_9']
+if submitted:
+    # select model based on month
+    if zone_type == "Neighborhoods":
+        models_NBH = load_models(zone_type)
+        if month_select == 'April 2023':
+            model = models_NBH['model_0']
+        elif month_select == 'May 2023' or month_select == 'June 2023':
+            model = models_NBH['model_1']
+        elif month_select == 'July 2023' or month_select == 'August 2023':
+            model = models_NBH['model_2']
+        elif month_select == 'September 2023':
+            model = models_NBH['model_4']
+        elif month_select == 'October 2023':
+            model = models_NBH['model_5']
+        elif month_select == 'November 2023' or month_select == 'December 2023':
+            model = models_NBH['model_6']
+        elif month_select == 'January 2024' or month_select == 'Febuary 2024' or month_select == 'March 2024':
+            model = models_NBH['model_9']
+    else:
+        models_tract = load_models(zone_type)
+        if month_select == 'April 2023':
+            model = models_tract['model_0']
+        elif month_select == 'May 2023' or month_select == 'June 2023':
+            model = models_tract['model_1']
+        elif month_select == 'July 2023' or month_select == 'August 2023':
+            model = models_tract['model_2']
+        elif month_select == 'September 2023':
+            model = models_tract['model_4']
+        elif month_select == 'October 2023':
+            model = models_tract['model_5']
+        elif month_select == 'November 2023' or month_select == 'December 2023':
+            model = models_tract['model_6']
+        elif month_select == 'January 2024' or month_select == 'Febuary 2024' or month_select == 'March 2024':
+            model = models_tract['model_9']
 
 # add survey data to dataframe
-if submitted:
     if zone_select == "All (Boston)":
         st.write("Please Input Neighborhood or Tract for Suggestion")
     else:
