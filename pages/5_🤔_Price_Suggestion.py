@@ -243,4 +243,4 @@ if submitted:
         st.write(df)
         
         y_pred = model.predict(df)
-        st.write(f'Your Suggested List Price is: {y_pred[0]}')
+        st.write(f'Your Suggested List Price for {month_select} is: ${y_pred[0]:.2f}')
