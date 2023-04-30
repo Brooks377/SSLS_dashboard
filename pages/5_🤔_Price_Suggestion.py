@@ -166,38 +166,33 @@ st.plotly_chart(fig, use_container_width=False)
 
 # extract models from zip
 
-# initialize dictionary to hold models (prevents load every time)
-models_dict = {}
-
-# name of the NBH models zip
-if zone_type == "Neighborhoods":
-    if 'models_NBH' not in models_dict:
+@st.cache_data
+def load_models(zone_type):
+    # name of the NBH models zip
+    if zone_type == "Neighborhoods":
         zip_filename = 'inputs/models/zip_models_NBH.zip'
         # create a zipfile object
         with zipfile.ZipFile(zip_filename, 'r') as zip_file:
             # load models from the pickle files in the zip file
             with zip_file.open('models_NBH.pkl') as f:
                 models_NBH = pickle.load(f)
-        # store the models in the dictionary
-        models_dict['models_NBH'] = models_NBH
-    else:
-        # load the models from the dictionary if they have already been loaded
-        models_NBH = models_dict['models_NBH']
+        return models_NBH
 
-# name of the tract models zip
-else:
-    if 'models_tract' not in models_dict:
+    # name of the tract models zip
+    else:
         zip_filename = 'inputs/models/zip_models_tract.zip'
         # create a zipfile object
         with zipfile.ZipFile(zip_filename, 'r') as zip_file:
             # load models from the pickle files in the zip file
             with zip_file.open('models_tract.pkl') as f:
                 models_tract = pickle.load(f)
-        # store the models in the dictionary
-        models_dict['models_tract'] = models_tract
-    else:
-        # load the models from the dictionary if they have already been loaded
-        models_tract = models_dict['models_tract']
+        return models_tract
+
+# use the load_models function
+if zone_type == "Neighborhoods":
+    models_NBH = load_models(zone_type)
+else:
+    models_tract = load_models(zone_type)
 
 
 # select model based on month
