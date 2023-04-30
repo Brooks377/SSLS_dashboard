@@ -12,3 +12,4 @@ mapclassify
 geopandas
 pyproj
 datetime
+wordcloud
