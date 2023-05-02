@@ -22,7 +22,7 @@ st.set_page_config(
 # Select a Month and a Neighborhood/Tract to View Current Listings Data
 """
 
-# load datasets
+
 @st.cache_data
 def load_csv(path):
     df = pd.read_csv(path)
@@ -33,6 +33,7 @@ def load_gpd(path):
     return df
 
 
+# load datasets
 boston_NBH = load_csv("inputs/boston_NBH.csv")
 boston_NBH_map = load_gpd("inputs/Census2020_BG_Neighborhoods/Census2020_BG_Neighborhoods.shp")
 boston_tract = load_csv("inputs/boston_tract.csv")
@@ -53,11 +54,6 @@ end_date = pd.to_datetime('2024-03-18')
 dates = pd.date_range(start=start_date, end=end_date, freq='MS')
 dates = [d.strftime('%B %Y') for d in dates]
 
-# take away select options with 0 listings to avoid errors
-boston_NBH_box = boston_NBH[boston_NBH['BNBs'] != 0]
-boston_tract_box = boston_tract[boston_tract['BNBs'] != 0]
-
-
 with st.sidebar:
     
     "Select Month"
@@ -68,10 +64,10 @@ with st.sidebar:
     
     if zone_type == 'Neighborhoods':
         "Select Neighborhood"
-        zone_select = st.selectbox("Neighborhood", ['All (Boston)'] + boston_NBH_box['BlockGr202'].tolist())
+        zone_select = st.selectbox("Neighborhood", ['All (Boston)'] + boston_NBH.query('BNBs != 0')['BlockGr202'].tolist())
     else:
         "Select Census Tract"
-        zone_select = st.selectbox("Census Tract", ['All (Boston)'] + boston_tract_box['NAME20'].tolist())
+        zone_select = st.selectbox("Census Tract", ['All (Boston)'] + boston_tract.query('BNBs != 0')['NAME20'].tolist())
         
     st.button("Rerun")
 
@@ -94,7 +90,7 @@ if zone_type == "Neighborhoods":
         # select the value in the other column
         zone_index_select = [filtered_df['OBJECTID'].values[0] - 1]
 
-    boston_NBH_map = boston_NBH_map.to_crs('epsg:4326')
+    boston_NBH_map.to_crs('epsg:4326', inplace=True)
     boston_NBH_map.set_index('BlockGr202', inplace=True)
     boston_NBH.set_index('BlockGr202', inplace=True)
 
@@ -126,7 +122,7 @@ else:
         # select the value in the other column
         zone_index_select = [filtered_df['OBJECTID'].values[0] - 1]
 
-    boston_tract_map = boston_tract_map.to_crs('epsg:4326')
+    boston_tract_map.to_crs('epsg:4326', inplace=True)
     boston_tract_map.set_index('NAME20', inplace=True)
     boston_tract.set_index('NAME20', inplace=True)
 
@@ -152,7 +148,7 @@ if zone_type == "Neighborhoods":
         master_filt = master
         month_selected = pd.to_datetime(month_select)
         master_filt = master_filt.loc[(master_filt['date'] >= month_selected)
-                                           & (master_filt['date'] < month_selected + pd.DateOffset(months=1))]
+                                            & (master_filt['date'] < month_selected + pd.DateOffset(months=1))]
     else:
         # select neighborhood
         master_filt = master.loc[master['census_NBH'] == zone_select].reset_index()
@@ -160,13 +156,13 @@ if zone_type == "Neighborhoods":
         # select date
         month_selected = pd.to_datetime(month_select)
         master_filt = master_filt.loc[(master_filt['date'] >= month_selected)
-                                           & (master_filt['date'] < month_selected + pd.DateOffset(months=1))]
+                                            & (master_filt['date'] < month_selected + pd.DateOffset(months=1))]
 else:
     if zone_select == "All (Boston)":
         master_filt = master
         month_selected = pd.to_datetime(month_select)
         master_filt = master_filt.loc[(master_filt['date'] >= month_selected)
-                                           & (master_filt['date'] < month_selected + pd.DateOffset(months=1))]
+                                            & (master_filt['date'] < month_selected + pd.DateOffset(months=1))]
     else:
         # select tract
         master_filt = master.loc[master['census_tract'] == zone_select].reset_index()
@@ -174,8 +170,7 @@ else:
         # select date
         month_selected = pd.to_datetime(month_select)
         master_filt = master_filt.loc[(master_filt['date'] >= month_selected)
-                                           & (master_filt['date'] < month_selected + pd.DateOffset(months=1))]
-
+                                            & (master_filt['date'] < month_selected + pd.DateOffset(months=1))]
 
 ############################################
 # Start of listings data displays
@@ -251,7 +246,8 @@ st.markdown('<hr style="border-top: 2px solid #bbb;">', unsafe_allow_html=True)
 ###################
 
 # using master_filt from above
-master_filt['Availability'] = np.where(master_filt['available'] == 't', 'available', 'booked')
+avail_list = np.where(master_filt.loc[:, 'available'] == 't', 'available', 'booked')
+master_filt = master_filt.assign(Availability=avail_list)
 
 # create annotation stat
 sum = master_filt['Availability'].value_counts().sum()
@@ -291,31 +287,32 @@ st.markdown('<hr style="border-top: 2px solid #bbb;">', unsafe_allow_html=True)
 ##########################
 
 # using master_filt from above
-master_filt['rental_length'] = np.where(master_filt['minimum_nights'] < 28, 'short-term', 'long-term')
+rental_list = np.where(master_filt.loc[:, 'minimum_nights'] < 28, 'short-term', 'long-term')
+master_filt = master_filt.assign(rental_length=rental_list)
 
 # remove minimum nights outliers
-master_filt_clean = master_filt.loc[(master_filt['minimum_nights'] < 200)]
+master_filt.query('minimum_nights < 200', inplace=True)
 
 # create annotation stat
-sum = master_filt_clean['rental_length'].value_counts().sum()
+sum = master_filt['rental_length'].value_counts().sum()
 try:
-    short = master_filt_clean['rental_length'].value_counts()['short-term']
+    short = master_filt['rental_length'].value_counts()['short-term']
 except KeyError:
     short = 0
 short_term_percent = (short / sum).round(2)
 
 # pre-define bins
-bins = [i for i in range(1, master_filt_clean['minimum_nights'].max() + 1)]
+bins = [i for i in range(1, master_filt['minimum_nights'].max() + 1)]
 
 if zone_type == "Neighborhoods":
     # Create plot
     fig3, ax = plt.subplots()
-    sns.histplot(data=master_filt_clean, x='minimum_nights', hue='rental_length', palette='Oranges', ax=ax, bins=bins, multiple="stack")
+    sns.histplot(data=master_filt, x='minimum_nights', hue='rental_length', palette='Oranges', ax=ax, bins=bins, multiple="stack")
 
 else:
     # Create plot
     fig3, ax = plt.subplots()
-    sns.histplot(data=master_filt_clean, x='minimum_nights', hue='rental_length', palette='Blues', ax=ax, bins=bins, multiple="stack")
+    sns.histplot(data=master_filt, x='minimum_nights', hue='rental_length', palette='Blues', ax=ax, bins=bins, multiple="stack")
     
 
 # Add vertical line
@@ -368,7 +365,7 @@ for amenity_list in amenities_low:
 sorted_word_freq = {k: v for k, v in sorted(word_counts_low.items(), key=lambda item: item[1], reverse=True)}
 
 word_freq_low = {}
-# print out the top 5-75 most common words
+# print out the top 5-90 most common words
 for word, freq in list(sorted_word_freq.items())[5:90]:
     word_freq_low[word] = freq
 
@@ -382,24 +379,43 @@ for amenity_list in amenities_high:
 sorted_word_freq = {k: v for k, v in sorted(word_counts_high.items(), key=lambda item: item[1], reverse=True)}
 
 word_freq_high = {}
-# print out the top 5-75 most common words
+# print out the top 5-90 most common words
 for word, freq in list(sorted_word_freq.items())[5:90]:
     word_freq_high[word] = freq
 
-# display high price word cloud
-mask = np.array(Image.open(path.join("inputs/mass_outline.png")))
-wordcloud_high = WordCloud(background_color="white", width=1600, height=800, mask=mask).generate_from_frequencies(word_freq_high)
+
+# word cloud creation function
+def create_word_cloud(word_freq, mask_path):
+    mask = np.array(Image.open(path.join(mask_path)))
+    wc = WordCloud(background_color="white", width=1600, height=800, mask=mask)
+    wordcloud = wc.generate_from_frequencies(word_freq)
+    image = wordcloud.to_image()
+    del wc
+    return image
+
+
+# create and display word clouds
+wordcloud_high = create_word_cloud(word_freq_high, "inputs/mass_outline.png")
+wordcloud_low = create_word_cloud(word_freq_low, "inputs/mass_outline.png")
+
 """
 **Common Amenities of High Price Listings**
 """
-st.image(wordcloud_high.to_image())
+st.image(wordcloud_high)
 
 # lame horizontal line
 st.markdown('<hr style="border-top: 2px solid #bbb;">', unsafe_allow_html=True)
 
-# display low price word cloud
-wordcloud_low = WordCloud(background_color="white", width=1600, height=800, mask=mask).generate_from_frequencies(word_freq_low)
 """
 **Common Amenities of Low Price Listings**
 """
-st.image(wordcloud_low.to_image(), use_column_width=True)
+st.image(wordcloud_low)
+
+
+# garbage collect manually to help stop memory overload
+for name in dir():
+    if not name.startswith('_'):
+        del globals()[name]
+
+import gc
+gc.collect()

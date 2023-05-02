@@ -15,6 +15,8 @@ st.set_page_config(
 """
 # Select a Neighborhood/Tract to View Stats
 """
+
+
 @st.cache_data
 def load_csv(path):
     df = pd.read_csv(path)
@@ -23,6 +25,7 @@ def load_csv(path):
 def load_gpd(path):
     df = gpd.read_file(path)
     return df
+
 
 # load all data first, some is needed for sidebar
 boston_NBH = load_csv("inputs/boston_NBH.csv")
@@ -80,7 +83,7 @@ if zone_type == "Neighborhoods":
         # select the value in the other column
         zone_index_select = [filtered_df['OBJECTID'].values[0] - 1]
 
-    boston_NBH_map = boston_NBH_map.to_crs('epsg:4326')
+    boston_NBH_map.to_crs('epsg:4326', inplace=True)
     boston_NBH_map.set_index('BlockGr202', inplace=True)
     boston_NBH.set_index('BlockGr202', inplace=True)
 
@@ -112,7 +115,7 @@ else:
         # select the value in the other column
         zone_index_select = [filtered_df['OBJECTID'].values[0] - 1]
 
-    boston_tract_map = boston_tract_map.to_crs('epsg:4326')
+    boston_tract_map.to_crs('epsg:4326', inplace=True)
     boston_tract_map.set_index('NAME20', inplace=True)
     boston_tract.set_index('NAME20', inplace=True)
 
@@ -279,5 +282,10 @@ else:
     st.write('There is not enough housing data for vacancy stats')
 
 
+# garbage collect manually to help stop memory overload
+for name in dir():
+    if not name.startswith('_'):
+        del globals()[name]
 
-
+import gc
+gc.collect()

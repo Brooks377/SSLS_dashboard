@@ -4,7 +4,6 @@ import geopandas as gpd
 import plotly.express as px
 import pickle
 import zipfile
-import os
 
 
 # Page config
@@ -116,7 +115,7 @@ if zone_type == "Neighborhoods":
         # select the value in the other column
         zone_index_select = [filtered_df['OBJECTID'].values[0] - 1]
 
-    boston_NBH_map = boston_NBH_map.to_crs('epsg:4326')
+    boston_NBH_map.to_crs('epsg:4326', inplace=True)
     boston_NBH_map.set_index('BlockGr202', inplace=True)
     boston_NBH.set_index('BlockGr202', inplace=True)
 
@@ -149,7 +148,7 @@ else:
         # select the value in the other column
         zone_index_select = [filtered_df['OBJECTID'].values[0] - 1]
 
-    boston_tract_map = boston_tract_map.to_crs('epsg:4326')
+    boston_tract_map.to_crs('epsg:4326', inplace=True)
     boston_tract_map.set_index('NAME20', inplace=True)
     boston_tract.set_index('NAME20', inplace=True)
 
@@ -237,3 +236,12 @@ if submitted:
         
         y_pred = model.predict(df)
         st.write(f'Your Suggested List Price for {month_select} is: ${y_pred[0]:.2f}')
+
+
+# garbage collect manually to help stop memory overload
+for name in dir():
+    if not name.startswith('_'):
+        del globals()[name]
+
+import gc
+gc.collect()
