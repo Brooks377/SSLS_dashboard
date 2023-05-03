@@ -129,7 +129,7 @@ elif page_select == 'EDA':
     with open('inputs/EDA_Methodology.html', 'r', encoding='utf-8') as f:
         html_file = f.read()
     # Display HTML file
-    html(html_file)
+    html(html_file, height = 10000)
 elif page_select == 'Methodology':
     """
     # EXAMPLE TEXT
