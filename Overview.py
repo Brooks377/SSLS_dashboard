@@ -128,6 +128,8 @@ if page_select == 'Project Overview':
 elif page_select == 'EDA':
     with open('inputs/EDA_Methodology.html', 'r', encoding='utf-8') as f:
         html_file = f.read()
+    # Display HTML file
+    html(html_file)
 elif page_select == 'Methodology':
     """
     # EXAMPLE TEXT
