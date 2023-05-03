@@ -110,30 +110,37 @@ if page_select == 'Project Overview':
         - Scroll bar for number of guests allowed
         - Checkbox for 25 different amenity options
     - This section outputs the intrinsic price for the set of allocations
-
+    """
+    """
     # **About Us:**
-
+    
     #### Brooks Walsh
-    ![Brooks](inputs/Brooks.png)
+    """
+    st.image('inputs/Brooks.png')
+    """
     - Major: Finance
     - Year of Graduation: 2024
     - Interests/Hobbies:  Hiking, soccer, reading
 
 
     #### Taylor Sheridan
-    ![Taylor](inputs/Taylor.png)
+    """
+    st.image('inputs/Taylor.png')
+    """
     - Major: Finance & Business Analytics
     - Year of Graduation: 2024
     - Interests/Hobbies: Golf, working out, visiting the beach
 
     #### Thomas McDade
-    ![Tommy](inputs/Tommy.png)
+    """
+    st.image('inputs/Tommy.png')
+    """
     - Major: Finance & Business Analytics
     - Year of Graduation: 2024
     - Interests/Hobbies: Sports betting, EDM music, nature")
+    """
 
-"""
-  
+
 elif page_select == 'EDA & Methodology':
     with open('inputs/EDA_Methodology.html', 'r', encoding='utf-8') as f:
         html_file = f.read()
