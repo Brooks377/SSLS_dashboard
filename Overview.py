@@ -55,13 +55,12 @@ if page_select == 'Project Overview':
     ## Project Purpose
     Since its inception in 2008, Airbnb has provided travelers with an alternative to staying in hotels or traditional bed and breakfasts. Airbnb has also allowed property owners to gain extra revenue by listing their properties for short or long term. Airbnb properties can range from luxury apartments to quaint places to crash. As a result, there is a large income range for potential renters and property owners. The diversity of properties allows for a variety in property types, locations, and amenities. 
 
-    Due to the variety in properties an aspiring host may not know how to exactly price their property. A property owner may not know which amenities will result in the maximum value for their property. Additionally, investors may look to acquire properties to rent as long term Airbnbs, to generate the maximum value. 
+    Due to the variety in properties, an aspiring host may not know how to exactly price their listing. A property owner may not know which amenities will result in the maximum value for their property. Additionally, investors may look to acquire properties to rent as long term Airbnbs, to generate the maximum value. 
 
     As a result we decided to complete an analysis of what attributes contribute to the price of Airbnb prices in Boston.
-    We choose Boston because there are currently 3,864 listings and many diverse neighborhoods, throughout the city. However, the listings are mostly apartments and smaller houses. There are a few limitations of choosing Boston, as many amenities do not apply to a city and the lack of similarity in properties in the same neighborhood that could be seen in suburban areas. However, Boston provides a beneficial example for a city with many diverse neighborhoods.
+    We choose Boston because there are currently 3,864 listings, and many diverse neighborhoods throughout the city. However, the listings are mostly apartments and smaller houses. There are a few limitations of choosing Boston, as some amenities are not represented and there is a lack of similarity in properties in the same neighborhood. Despite this, analyzing boston provides a great indicator to the trends of other cities.
 
-    The goal for this project is to find a predicted Airbnb price based on neighborhood, census tract, property type  and amenities. The end goal is for a prospective Airbnb host to use this dashboard to generate an estimate of the price 
-    of their Airbnb based on these factors. 
+    The goal for this project is to find a suggested Airbnb price based on neighborhood, census tract, property type  and amenities. The end goal is for a prospective Airbnb host to use this dashboard to view data about other listings, then use our models to calculate a suggested price.
 
     ## Inspiration
     Our group was inspired for this project when watching the Boston Celtics play and seeing Airbnb advertisements across the court. We decided to research [data](http://insideairbnb.com/get-the-data/) regarding Airbnbs in Boston specifically. This site includes data that is the basis of our project.
@@ -73,7 +72,7 @@ if page_select == 'Project Overview':
 
 
     ## Caveats
-    This project reports the **intrinsic** value of Airbnbs in Boston, not the market value. Since the market value can be viewed on the internet easily, this analysis attempts to calculate the intrinsic value based on location and amenities. In other words, this report calculates the value that the features of the property provide.
+    This project reports the **intrinsic** value of Airbnbs in Boston, not the market value. Since the market value can be viewed on the internet easily, this analysis attempts to calculate the intrinsic value based on location, property and amenities. In other words, this report calculates the value that the features of the property provide.
 
 
 
@@ -99,7 +98,7 @@ if page_select == 'Project Overview':
         - We determined that we can assume that there is no relationship with Boston Airbnb listing and nearby listings
 
     4. **Price Suggestion**
-    - This section is the culmination of the project, which allows users to put in multiple inputs to determine the predicted Airbnb price
+    - This section is the culmination of the project, which allows users to put in multiple inputs to determine a suggested Airbnb price.
     - The input choices include:
         - Zone type
         - Neighborhood
@@ -110,13 +109,19 @@ if page_select == 'Project Overview':
         - Scroll bar for number of guests allowed
         - Checkbox for 25 different amenity options
     - This section outputs the intrinsic price for the set of allocations
-
+    
+    ## Links to raw data:
+    - [Inside Airbnb (listings data)](http://insideairbnb.com/get-the-data/)
+    - [Neighborhood Map](https://data.boston.gov/dataset/census-2020-block-group-neighborhoods/resource/ed89fab7-aa21-42ce-874b-1b4971ab50fb)
+    - [Neighborhood Stats](https://data.boston.gov/dataset/2020-census-for-boston/resource/5800a0a2-6acd-41a3-9fe0-1bf7b038750d)
+    - [Tract Map](https://data.boston.gov/dataset/census-2020-tracts)
+    - [Tract Stats](https://data.boston.gov/dataset/2020-census-for-boston/resource/013aba13-5985-4067-bba4-a8d3ca9a34ac)
 
     # **About Us:**
 
     #### Brooks Walsh
     """
-    st.image('inputs/Brooks.png')
+    st.image('inputs/images/Brooks.png')
     """
     - Major: Finance
     - Year of Graduation: 2024
@@ -125,7 +130,7 @@ if page_select == 'Project Overview':
 
     #### Taylor Sheridan
     """
-    st.image('inputs/Taylor.png')
+    st.image('inputs/images/Taylor.png')
     """
     - Major: Finance & Business Analytics
     - Year of Graduation: 2024
@@ -133,7 +138,7 @@ if page_select == 'Project Overview':
 
     #### Thomas McDade
     """
-    st.image('inputs/Tommy.png')
+    st.image('inputs/images/Tommy.png')
     """
     - Major: Finance & Business Analytics
     - Year of Graduation: 2024
