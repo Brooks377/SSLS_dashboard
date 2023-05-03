@@ -114,7 +114,7 @@ if page_select == 'Project Overview':
     - [Inside Airbnb (listings data)](http://insideairbnb.com/get-the-data/)
     - [Neighborhood Map](https://data.boston.gov/dataset/census-2020-block-group-neighborhoods/resource/ed89fab7-aa21-42ce-874b-1b4971ab50fb)
     - [Neighborhood Stats](https://data.boston.gov/dataset/2020-census-for-boston/resource/5800a0a2-6acd-41a3-9fe0-1bf7b038750d)
-    - [Tract Map](https://data.boston.gov/dataset/census-2020-tracts)
+    - [Tract Map (no longer available)](https://data.boston.gov/dataset/2020-census-for-boston)
     - [Tract Stats](https://data.boston.gov/dataset/2020-census-for-boston/resource/013aba13-5985-4067-bba4-a8d3ca9a34ac)
 
     # **About Us:**
@@ -125,7 +125,7 @@ if page_select == 'Project Overview':
     """
     - Major: Finance
     - Year of Graduation: 2024
-    - Interests/Hobbies:  Hiking, skiing, coding
+    - Interests/Hobbies:  Hiking, skiing, watching Liverpool games
 
 
     #### Taylor Sheridan
