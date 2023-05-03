@@ -14944,27 +14944,29 @@ class="
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>We constructed our pipeline using a RandomForestRegressor() to simulate the semi-random nature of influence that each variable holds in a customer's mind.</p>
 <ul>
-<li>The following code creates our pre-trained pipeline that is used when suggesting prices based on neighborhood:
-```python
-# create NBH pipeline
-cat_pipe_features = ['room_type','property_type', 'bedrooms', 'census_NBH']
-num_pipe_features = ['accommodates']
-bin_pipe_features = ['air_conditioning', 'high_end_electronics', 'bbq', 'balcony', 'nature_and_views', 'bed_linen', 'breakfast', 'tv', 'coffee_machine', 'cooking_basics', 'white_goods', 'elevator', 'gym', 'child_friendly', 'parking', 'outdoor_space', 'host_greeting', 'hot_tub_sauna_or_pool', 'internet', 'long_term_stays', 'pets_allowed', 'private_entrance', 'secure', 'self_check_in', 'smoking_allowed']
-cat_pipe = make_pipeline(OneHotEncoder(sparse_output=False))
-num_pipe = make_pipeline(StandardScaler())
-binary_pipe = make_pipeline('passthrough')</li>
+<li>The following code creates our pre-trained pipeline that is used when suggesting prices based on neighborhood:  </li>
 </ul>
-<p>preproc_pipe = make_column_transformer(
-    (cat_pipe, cat_pipe_features),
-    (num_pipe, num_pipe_features),
-    (binary_pipe, bin_pipe_features))</p>
-<p>pipe_NBH = Pipeline([('columntransformer', preproc_pipe),
-                 ('regression', RandomForestRegressor())])</p>
+<div class="highlight"><pre><span></span><span class="c1"># create NBH pipeline</span>
+<span class="n">cat_pipe_features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;room_type&#39;</span><span class="p">,</span><span class="s1">&#39;property_type&#39;</span><span class="p">,</span> <span class="s1">&#39;bedrooms&#39;</span><span class="p">,</span> <span class="s1">&#39;census_NBH&#39;</span><span class="p">]</span>
+<span class="n">num_pipe_features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;accommodates&#39;</span><span class="p">]</span>
+<span class="n">bin_pipe_features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;air_conditioning&#39;</span><span class="p">,</span> <span class="s1">&#39;high_end_electronics&#39;</span><span class="p">,</span> <span class="s1">&#39;bbq&#39;</span><span class="p">,</span> <span class="s1">&#39;balcony&#39;</span><span class="p">,</span> <span class="s1">&#39;nature_and_views&#39;</span><span class="p">,</span> <span class="s1">&#39;bed_linen&#39;</span><span class="p">,</span> <span class="s1">&#39;breakfast&#39;</span><span class="p">,</span> <span class="s1">&#39;tv&#39;</span><span class="p">,</span> <span class="s1">&#39;coffee_machine&#39;</span><span class="p">,</span> <span class="s1">&#39;cooking_basics&#39;</span><span class="p">,</span> <span class="s1">&#39;white_goods&#39;</span><span class="p">,</span> <span class="s1">&#39;elevator&#39;</span><span class="p">,</span> <span class="s1">&#39;gym&#39;</span><span class="p">,</span> <span class="s1">&#39;child_friendly&#39;</span><span class="p">,</span> <span class="s1">&#39;parking&#39;</span><span class="p">,</span> <span class="s1">&#39;outdoor_space&#39;</span><span class="p">,</span> <span class="s1">&#39;host_greeting&#39;</span><span class="p">,</span> <span class="s1">&#39;hot_tub_sauna_or_pool&#39;</span><span class="p">,</span> <span class="s1">&#39;internet&#39;</span><span class="p">,</span> <span class="s1">&#39;long_term_stays&#39;</span><span class="p">,</span> <span class="s1">&#39;pets_allowed&#39;</span><span class="p">,</span> <span class="s1">&#39;private_entrance&#39;</span><span class="p">,</span> <span class="s1">&#39;secure&#39;</span><span class="p">,</span> <span class="s1">&#39;self_check_in&#39;</span><span class="p">,</span> <span class="s1">&#39;smoking_allowed&#39;</span><span class="p">]</span>
+<span class="n">cat_pipe</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">OneHotEncoder</span><span class="p">(</span><span class="n">sparse_output</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="n">num_pipe</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">StandardScaler</span><span class="p">())</span>
+<span class="n">binary_pipe</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="s1">&#39;passthrough&#39;</span><span class="p">)</span>
 
-<pre><code>
-- This pipeline construction is identical to the model we used for census tracts. The only difference is the inclusion of 'census_tract' instead of 'census_NBH' in the following line of code:
-```python
-cat_pipe_features = ['room_type','property_type', 'bedrooms', 'census_tract']</code></pre>
+<span class="n">preproc_pipe</span> <span class="o">=</span> <span class="n">make_column_transformer</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">cat_pipe</span><span class="p">,</span> <span class="n">cat_pipe_features</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">num_pipe</span><span class="p">,</span> <span class="n">num_pipe_features</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">binary_pipe</span><span class="p">,</span> <span class="n">bin_pipe_features</span><span class="p">))</span>
+
+<span class="n">pipe_NBH</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([(</span><span class="s1">&#39;columntransformer&#39;</span><span class="p">,</span> <span class="n">preproc_pipe</span><span class="p">),</span>
+                 <span class="p">(</span><span class="s1">&#39;regression&#39;</span><span class="p">,</span> <span class="n">RandomForestRegressor</span><span class="p">())])</span>
+</pre></div>
+<ul>
+<li>This pipeline construction is identical to the model we used for census tracts. The only difference is the inclusion of 'census_tract' instead of 'census_NBH' in the following line of code:<div class="highlight"><pre><span></span><span class="n">cat_pipe_features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;room_type&#39;</span><span class="p">,</span><span class="s1">&#39;property_type&#39;</span><span class="p">,</span> <span class="s1">&#39;bedrooms&#39;</span><span class="p">,</span> <span class="s1">&#39;census_tract&#39;</span><span class="p">]</span>
+</pre></div>
+</li>
+</ul>
 
 </div>
 </div>
