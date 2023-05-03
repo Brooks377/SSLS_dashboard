@@ -51,8 +51,8 @@ with st.sidebar:
 #####################################################
 
 if page_select == 'Project Overview':
-    st.markdown( 
-    "## Project Purpose
+    """
+    ## Project Purpose
     Since its inception in 2008, Airbnb has provided travelers with an alternative to staying in hotels or traditional bed and breakfasts. Airbnb has also allowed property owners to gain extra revenue by listing their properties for short or long term. Airbnb properties can range from luxury apartments to quaint places to crash. As a result, there is a large income range for potential renters and property owners. The diversity of properties allows for a variety in property types, locations, and amenities. 
 
     Due to the variety in properties an aspiring host may not know how to exactly price their property. A property owner may not know which amenities will result in the maximum value for their property. Additionally, investors may look to acquire properties to rent as long term Airbnbs, to generate the maximum value. 
@@ -132,7 +132,7 @@ if page_select == 'Project Overview':
     - Year of Graduation: 2024
     - Interests/Hobbies: Sports betting, EDM music, nature")
 
-
+"""
   
 elif page_select == 'EDA & Methodology':
     with open('inputs/EDA_Methodology.html', 'r', encoding='utf-8') as f:
