@@ -15,3 +15,4 @@ with open('inputs/spatial_regression.html', 'r', encoding='utf-8') as f:
 
 # Display HTML file
 html(html_file, height=3500)
+

@@ -1,5 +1,7 @@
 import pandas as pd
 import streamlit as st
+from streamlit.components.v1 import html
+
 
 
 # Page config
@@ -124,9 +126,8 @@ if page_select == 'Project Overview':
 
     """
 elif page_select == 'EDA':
-    """
-    EDA
-    """
+    with open('inputs/EDA_Methodology.html', 'r', encoding='utf-8') as f:
+        html_file = f.read()
 elif page_select == 'Methodology':
     """
     # EXAMPLE TEXT
