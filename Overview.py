@@ -37,9 +37,9 @@ with st.sidebar:
 
     st.button("Rerun")
     '''
-    [Website Source Code](https://github.com/Brooks377/SSLS_dashboard)
-    [LeftSide Team Repo](https://github.com/Brooks377/leftside_teamproject)
-    [Template source code (Wall Street Bets)](https://github.com/donbowen/portfolio-frontier-streamlit-dashboard)
+    [Website Source Code](https://github.com/Brooks377/SSLS_dashboard)     
+    [LeftSide Team Repo](https://github.com/Brooks377/leftside_teamproject)     
+    [Template source code (Wall Street Bets)](https://github.com/donbowen/portfolio-frontier-streamlit-dashboard)     
     '''
 #############################################
 # end: sidebar
