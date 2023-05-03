@@ -1,9 +1,11 @@
 # Strong Side Left Side: Streamlit Dashboard
- Fork of Wall Street Bets streamlit project for a template
- - **PROPOSAL NOTE**: current build runs quite slow because of data building inside of app.py
-     - this is an easy fix but not worth it for the proposal
- - fix for error message about pylsp when using spyder 
-   - ```conda install -c conda-forge python-lsp-server ```
+This repo contains the code that runs [our website](https://ssls-airbnb-analysis.streamlit.app/).
+- The main (entry) file is "Overview.py"
+  - Sub-pages can be found in the "pages" folder
+- Relevant information about the raw data, EDA, methodology, and purpose of this project are found on the website's home page.
+
+
+# Below are instructions about how to run our streamlit dashboard natively (off your local disk)
 ## To Run for the first time
 ```
 # download files (you can do this via github desktop too)
@@ -26,10 +28,6 @@ jupyter lab  # alternative IDE
 ```
 ## To Run after first time
 ```
-####
-# my current path: C:\Users\dbawa\ZZ__School_Related\FIN_377\SSLS_dashboard
-####
-
 # In Anaconda Prompt:
 cd <path to SSLS_dashboard folder>
 conda activate streamlit-env
