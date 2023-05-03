@@ -65,7 +65,7 @@ if page_select == 'Project Overview':
     ## Inspiration
     Our group was inspired for this project when watching the Boston Celtics play and seeing Airbnb advertisements across the court. We decided to research [data](http://insideairbnb.com/get-the-data/) regarding Airbnbs in Boston specifically. This site includes data that is the basis of our project.
 
-    Additionally we were inspired for the analysis for this project from this data science project  [data science project](https://mohamedirfansh.github.io/Airbnb-Data-Science-Project), which analyzed Airbnb data in Seattle. 
+    Additionally we were inspired for the analysis for this project from this [data science project](https://mohamedirfansh.github.io/Airbnb-Data-Science-Project), which analyzed Airbnb data in Seattle. 
     This project explored how features, location, and textual data affected prices of Airbnbs. The location data helped influence our maps and spatial regression output.
 
 
