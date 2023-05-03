@@ -135,5 +135,5 @@ else:
     with open('inputs/ML_discussion.html', 'r', encoding='utf-8') as f:
         html_file = f.read()
     # Display HTML file
-    html(html_file, height = 7500)
+    html(html_file, height = 7800)
 
