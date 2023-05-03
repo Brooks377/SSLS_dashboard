@@ -114,20 +114,20 @@ if page_select == 'Project Overview':
     # **About Us:**
 
     #### Brooks Walsh
-    ![Brooks](Brooks.png "Logo Title Text 2")
+    ![Brooks](inputs/Brooks.png "Logo Title Text 2")
     - Major: Finance
     - Year of Graduation: 2024
     - Interests/Hobbies:  Hiking, soccer, reading
 
 
     #### Taylor Sheridan
-    ![Taylor](Taylor.png "Logo Title Text 2")
+    ![Taylor](inputs/Taylor.png "Logo Title Text 2")
     - Major: Finance & Business Analytics
     - Year of Graduation: 2024
     - Interests/Hobbies: Golf, working out, visiting the beach
 
     #### Thomas McDade
-    ![Tommy](Tommy.png "Logo Title Text 2")
+    ![Tommy](inputs/Tommy.png "Logo Title Text 2")
     - Major: Finance & Business Analytics
     - Year of Graduation: 2024
     - Interests/Hobbies: Sports betting, EDM music, nature
