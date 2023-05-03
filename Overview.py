@@ -133,11 +133,6 @@ if page_select == 'Project Overview':
     - Interests/Hobbies: Sports betting, EDM music, nature
 
 
-
-```python
-
-```
-
     """
 elif page_select == 'EDA & Methodology':
     with open('inputs/EDA_Methodology.html', 'r', encoding='utf-8') as f:
