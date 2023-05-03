@@ -175,8 +175,8 @@ st.plotly_chart(fig, use_container_width=False)
 
 @st.cache_data
 def load_models(zone_type):
-    # name of the NBH models zip
     if zone_type == "Neighborhoods":
+        # name of the NBH models zip
         zip_filename = 'inputs/models/zip_models_NBH.zip'
         # create a zipfile object
         with zipfile.ZipFile(zip_filename, 'r') as zip_file:
@@ -185,8 +185,8 @@ def load_models(zone_type):
                 models_NBH = pickle.load(f)
         return models_NBH
 
-    # name of the tract models zip
     else:
+        # name of the tract models zip
         zip_filename = 'inputs/models/zip_models_tract.zip'
         # create a zipfile object
         with zipfile.ZipFile(zip_filename, 'r') as zip_file:
