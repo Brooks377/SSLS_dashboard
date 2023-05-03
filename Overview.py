@@ -66,11 +66,8 @@ if page_select == 'Project Overview':
     ## Inspiration
     Our group was inspired for this project when watching the Boston Celtics play and seeing Airbnb advertisements across the court. We decided to research [data](http://insideairbnb.com/get-the-data/) regarding Airbnbs in Boston specifically. This site includes data that is the basis of our project.
 
-    Additionally we were inspired for the analysis for this project from this data science project  [data science project](https://mohamedirfansh.github.io/Airbnb-Data-Science-Project), which was analyzed AirBnB data. 
-
-
-    This project helped inspire us to analyze AirBnB data based on amenities and neighborhoods. The project also
-    inspired the wordcloud for top amenities.
+    Additionally we were inspired for the analysis for this project from this data science project  [data science project](https://mohamedirfansh.github.io/Airbnb-Data-Science-Project), which analyzed Airbnb data in Seattle. 
+    This project explored how features, location, and textual data affected prices of Airbnbs. The location data helped influence our maps and spatial regression output.
 
 
 
@@ -114,16 +111,32 @@ if page_select == 'Project Overview':
         - Checkbox for 25 different amenity options
     - This section outputs the intrinsic price for the set of allocations
 
-    # Links and Contribution
-    **About Us:**
+    # **About Us:**
+
     #### Brooks Walsh
+    ![Brooks](Brooks.png "Logo Title Text 2")
+    - Major: Finance
+    - Year of Graduation: 2024
+    - Interests/Hobbies:  Hiking, soccer, reading
+
 
     #### Taylor Sheridan
+    ![Taylor](Taylor.png "Logo Title Text 2")
+    - Major: Finance & Business Analytics
+    - Year of Graduation: 2024
+    - Interests/Hobbies: Golf, working out, visiting the beach
 
     #### Thomas McDade
+    ![Tommy](Tommy.png "Logo Title Text 2")
+    - Major: Finance & Business Analytics
+    - Year of Graduation: 2024
+    - Interests/Hobbies: Sports betting, EDM music, nature
 
-    **About Us:**
-    Brooks Walsh, Taylor Sheridan, and Thomas McDade are students at Lehigh University studying finance with an interests in data science and business analytics. All three took the course Lehigh's Data Science for Finance taught by Don Bowen. This final project represents the culmination of everything they learned in the course 
+
+
+```python
+
+```
 
     """
 elif page_select == 'EDA & Methodology':
