@@ -110,17 +110,17 @@ if page_select == 'Project Overview':
         - Scroll bar for number of guests allowed
         - Checkbox for 25 different amenity options
     - This section outputs the intrinsic price for the set of allocations
-    """
-    """
+
+
     # **About Us:**
-    
+
     #### Brooks Walsh
     """
     st.image('inputs/Brooks.png')
     """
     - Major: Finance
     - Year of Graduation: 2024
-    - Interests/Hobbies:  Hiking, soccer, reading
+    - Interests/Hobbies:  Hiking, skiing, coding
 
 
     #### Taylor Sheridan
@@ -137,7 +137,7 @@ if page_select == 'Project Overview':
     """
     - Major: Finance & Business Analytics
     - Year of Graduation: 2024
-    - Interests/Hobbies: Sports betting, EDM music, nature")
+    - Interests/Hobbies: Sports betting, EDM music, nature
     """
 
 
