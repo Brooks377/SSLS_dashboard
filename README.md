@@ -20,7 +20,7 @@ conda env create -f environment.yml
 conda activate streamlit-env
 
 # start the app in a browser window
-streamlit Overview.py
+streamlit run Overview.py
 
 # open any IDE you want to modify app - spyder > jupyterlab for this
 spyder  # and when you save the file, the app website will update
