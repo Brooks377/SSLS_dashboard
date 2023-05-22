@@ -10,7 +10,7 @@ This repo contains the code that runs [our website](https://ssls-airbnb-analysis
 ```
 # download files (you can do this via github desktop too)
 cd <path to your FIN377 folder> # make sure the cd isn't a repo or inside a repo!
-git clone https://github.com/Brooks377/SSLS_dashboard.git
+git clone https://github.com/BrooksWalsh/SSLS_dashboard.git
 
 # move the terminal to the new folder
 cd SSLS_dashboard
